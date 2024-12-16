@@ -1,0 +1,181 @@
+basePath: /
+definitions:
+  handler.ErrorResponse:
+    properties:
+      message:
+        type: string
+      rawError:
+        type: string
+    type: object
+  model.Device:
+    properties:
+      brand:
+        type: string
+      creationTime:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.PartialDevice:
+    properties:
+      brand:
+        type: string
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: pealan97@gmail.com
+    name: Pedro Ramos
+  description: A device management service REST API in Go using Gin framework.
+  title: Golang Rest API
+  version: "1.0"
+paths:
+  /device:
+    get:
+      description: Gets a list of all registered Devices. The user has also the option
+        to filter by brand. Empty lists can be returned.
+      parameters:
+      - description: Filter results by this brand
+        in: query
+        name: brand
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Device'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get Devices
+      tags:
+      - Device
+    post:
+      consumes:
+      - application/json
+      description: Adds a new Device
+      parameters:
+      - description: Device that will be added
+        in: body
+        name: device
+        required: true
+        schema:
+          $ref: '#/definitions/model.PartialDevice'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Device'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Add Device
+      tags:
+      - Device
+  /device/{id}:
+    delete:
+      description: Deletes the Device with the given ID
+      parameters:
+      - description: Device's ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete Device
+      tags:
+      - Device
+    get:
+      description: Gets Device by their ID
+      parameters:
+      - description: Device's ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Device'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get Device by ID
+      tags:
+      - Device
+    put:
+      consumes:
+      - application/json
+      description: Updates the Device with the given ID. Full or partial forms are
+        accepted
+      parameters:
+      - description: Device's ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Device's new attributes.
+        in: body
+        name: device
+        required: true
+        schema:
+          $ref: '#/definitions/model.PartialDevice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Device'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update Device
+      tags:
+      - Device
+swagger: "2.0"
